@@ -4,27 +4,27 @@ MAINTAINER agapple (jianghang115@gmail.com)
 
 # install otter
 COPY image/ /tmp/docker/
+COPY app.sh /home/admin/
+COPY config.sh /home/admin/
 COPY manager.deployer-*.tar.gz /home/admin/
 
 RUN \
     cp -R /tmp/docker/alidata /alidata && \
     chmod +x /alidata/bin/* && \
     mkdir -p /home/admin && \
-    cp -R /tmp/docker/admin/* /home/admin/  && \
     /bin/cp -f alidata/bin/lark-wait /usr/bin/lark-wait && \
     mkdir -p /home/admin/manager && \
     tar -xzvf /home/admin/manager.deployer-*.tar.gz -C /home/admin/manager && \
     /bin/rm -f /home/admin/manager.deployer-*.tar.gz && \
     mkdir -p home/admin/manager/logs  && \
     chmod +x /home/admin/*.sh  && \
-    chmod +x /home/admin/bin/*.sh  && \
     chown admin: -R /home/admin && \
+    sh config.sh 1>>/tmp/manager.log 2>&1 && \
     yum clean all && \
     true
-
-ENV DOCKER_DEPLOY_TYPE=VM PATH=$PATH:/usr/local/mysql/bin:/usr/local/mysql/scripts
 
 WORKDIR /home/admin
 
 ENTRYPOINT [ "/alidata/bin/main.sh" ]
-CMD [ "/home/admin/app.sh" ]
+ENTRYPOINT [ "/home/admin/app.sh" ]
+CMD [ "/bin/bash" ]

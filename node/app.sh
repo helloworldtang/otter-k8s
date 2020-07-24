@@ -4,8 +4,8 @@ set -e
 source /etc/profile
 export JAVA_HOME=/usr/java/latest
 export PATH=$JAVA_HOME/bin:$PATH
-touch /zkh/log/node.log
-chown admin: /zkh/log/node.log
+touch /tmp/node.log
+chown admin: /tmp/node.log
 chown admin: /home/admin/node
 host=$(hostname -i)
 
@@ -44,7 +44,7 @@ function start_node() {
   cmd="sed -i -e 's/^otter.manager.address.*$/otter.manager.address = ${MANAGER_ADDRESS}/' /home/admin/node/conf/otter.properties"
   eval $cmd
 
-  su admin -c 'cd /home/admin/node/bin/ && echo '${NID}'> /home/admin/node/conf/nid && sh startup.sh 1>>/zkh/log/node.log 2>&1'
+  su admin -c 'cd /home/admin/node/bin/ && echo '${NID}'> /home/admin/node/conf/nid && sh startup.sh 1>>/tmp/node.log 2>&1'
   sleep 5
   #check start
   checkStart "node" "nc 127.0.0.1 2088 -w 1 -z | wc -l" 30
